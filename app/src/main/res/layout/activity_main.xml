@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.asus.myapplication.MainActivity">
+
+
+    <TextView
+        android:id="@+id/tX"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="X:"
+        app:layout_constraintBaseline_toBaselineOf="@+id/tY"
+        app:layout_constraintEnd_toStartOf="@+id/tY"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/tY"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="229dp"
+        android:text="Y:"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/tZ"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/tX" />
+
+    <TextView
+        android:id="@+id/tZ"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Z:"
+        app:layout_constraintBaseline_toBaselineOf="@+id/tY"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/tY" />
+
+    <TextView
+        android:id="@+id/tA"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:text="A"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.122"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <RadioGroup
+        android:id="@+id/radioGroup"
+        android:layout_width="wrap_content"
+        android:layout_height="163dp"
+        android:layout_marginBottom="36dp"
+        android:layout_marginStart="22dp"
+        app:layout_constraintBottom_toTopOf="@+id/tY"
+        app:layout_constraintStart_toEndOf="@+id/tX">
+
+        <RadioButton
+            android:id="@+id/radioButtonWalking"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="true"
+            android:text="WALKING"
+            tools:layout_editor_absoluteX="137dp"
+            tools:layout_editor_absoluteY="43dp" />
+
+        <RadioButton
+            android:id="@+id/radioButtonRunning"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="false"
+            android:text="RUNNING"
+            tools:layout_editor_absoluteX="137dp"
+            tools:layout_editor_absoluteY="87dp" />
+
+        <RadioButton
+            android:id="@+id/radioButtonUpStairs"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="false"
+            android:text="GO UPSTAIRS"
+            tools:layout_editor_absoluteX="137dp"
+            tools:layout_editor_absoluteY="128dp" />
+
+        <RadioButton
+            android:id="@+id/radioButtonDownStairs"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="false"
+            android:text="GO DOWNSTAIRS"
+            tools:layout_editor_absoluteX="137dp"
+            tools:layout_editor_absoluteY="174dp" />
+
+        <RadioButton
+            android:id="@+id/radioButtonOther"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="false"
+            android:text="OTHER"
+            tools:layout_editor_absoluteX="137dp"
+            tools:layout_editor_absoluteY="221dp" />
+    </RadioGroup>
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="9dp"
+        android:text="GPS:"
+        app:layout_constraintStart_toStartOf="@+id/tX"
+        app:layout_constraintTop_toBottomOf="@+id/tX" />
+
+    <Button
+        android:id="@+id/button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Start Activity"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView3" />
+
+    <Button
+        android:id="@+id/button2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="9dp"
+        android:text="Stop"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/button" />
+
+    <Button
+        android:id="@+id/button3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="7dp"
+        android:text="Transfer Data"
+        app:layout_constraintBottom_toTopOf="@+id/checkBox"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <CheckBox
+        android:id="@+id/checkBox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="66dp"
+        android:text="Mode Auto"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/button2" />
+</android.support.constraint.ConstraintLayout>
+
+
+

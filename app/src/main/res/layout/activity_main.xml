@@ -141,6 +141,7 @@
         android:id="@+id/button3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:onClick="tranferOnClick"
         android:text="Transfer Data"
         app:layout_constraintBottom_toTopOf="@+id/checkBox"
         app:layout_constraintEnd_toEndOf="parent"
@@ -155,6 +156,39 @@
         android:text="Mode Auto"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/button3" />
+
+    <TextView
+        android:id="@+id/tGX"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="13dp"
+        android:layout_marginStart="2dp"
+        android:text="GX"
+        app:layout_constraintBottom_toTopOf="@+id/tX"
+        app:layout_constraintEnd_toStartOf="@+id/tGY"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/tGY"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="13dp"
+        android:layout_marginEnd="12dp"
+        android:text="GY"
+        app:layout_constraintBottom_toTopOf="@+id/tY"
+        app:layout_constraintEnd_toStartOf="@+id/tGZ"
+        app:layout_constraintStart_toEndOf="@+id/tGX" />
+
+    <TextView
+        android:id="@+id/tGZ"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="13dp"
+        android:layout_marginEnd="2dp"
+        android:text="GZ"
+        app:layout_constraintBottom_toTopOf="@+id/tZ"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/tGY" />
 </android.support.constraint.ConstraintLayout>
 
 

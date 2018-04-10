@@ -37,6 +37,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     TextView tx,ty,tz;
     double longitude;
     double latitude;
+    double altitude;
 
     //Gyroscope
     Sensor gyroscope;
@@ -44,8 +45,12 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     float sensorGyroX,sensorGyroY,sensorGyroZ;
     TextView GX,GY,GZ;
 
-    //magnetometer
-    Sensor magnetometer;
+    //LightSensor
+    Sensor lightSensor;
+    SensorManager sensorManagerLight;
+    float nLight;
+    TextView tL;
+
 
 
     TextView tGps;
@@ -58,6 +63,13 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         Log.i("tranf","gravar");
         a=new Dados(latitude,longitude,sensorX,sensorY,sensorZ);
         Log.i("TEST",""+a.getLatitude());
+
+    }
+    public void stopOnClick(View v){
+        //************USAR DEPOIS PARA PARAR DE REGISTAR OS VALORES**********
+        sensorManager.unregisterListener(this);
+        sensorManagerLight.unregisterListener(this);
+        sensorManagerGyro.unregisterListener(this);
 
     }
 
@@ -79,7 +91,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                             public void run() {
                                 TextView tdate = (TextView) findViewById(R.id.tA);
                                 long date = System.currentTimeMillis();
-                                SimpleDateFormat adf = new SimpleDateFormat("dd-MM-yyyy , hh:mm:ss a");
+                                SimpleDateFormat adf = new SimpleDateFormat("dd-MM-yyyy , HH:mm:ss");
                                 String dateString = adf.format(date);
                                 tdate.setText(dateString);
                             }
@@ -91,6 +103,9 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             }
         };
         t.start();
+    }
+
+    public void onClickStartActivity(View v){
 
         //****************************************ACELEROMETRO********************************************************
         sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
@@ -108,6 +123,16 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
         sensorManagerGyro.registerListener(this, gyroscope, SensorManager.SENSOR_DELAY_NORMAL);
 
+        //****************************************LIGHTSENSOR***********************************************************
+        sensorManagerLight =(SensorManager) getSystemService(SENSOR_SERVICE);
+        lightSensor = sensorManagerLight.getDefaultSensor(Sensor.TYPE_LIGHT);
+        if(lightSensor == null){
+            Toast.makeText(this, "The device has no lightsensor!\n", Toast.LENGTH_SHORT).show();
+            finish();
+        }
+        sensorManagerLight.registerListener(this,lightSensor,SensorManager.SENSOR_DELAY_NORMAL);
+
+
         //****************************************GPS (LOCALIZAçÃO)***************************************************
         tGps=findViewById(R.id.tGPS);
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
@@ -122,7 +147,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         }
     }
 
-    //****************************************ACELEROMETRO**********************************************************
     @Override
     public void onSensorChanged(SensorEvent event) {
 
@@ -131,28 +155,13 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 sensorX = event.values[0];
                 sensorY = event.values[1];
                 sensorZ = event.values[2];
-
-                /*final float alpha = 0.8;
-
-                // Isolate the force of gravity with the low-pass filter.
-                gravity[0] = alpha * gravity[0] + (1 - alpha) * event.values[0];
-                gravity[1] = alpha * gravity[1] + (1 - alpha) * event.values[1];
-                gravity[2] = alpha * gravity[2] + (1 - alpha) * event.values[2];
-
-                // Remove the gravity contribution with the high-pass filter.
-                linear_acceleration[0] = event.values[0] - gravity[0];
-                linear_acceleration[1] = event.values[1] - gravity[1];
-                linear_acceleration[2] = event.values[2] - gravity[2];*/
-
-                //float sensorA = (event.values[0] + event.values[1] + event.values[2]);
                 tx = (TextView) findViewById(R.id.tX);
                 ty = (TextView) findViewById(R.id.tY);
                 tz = (TextView) findViewById(R.id.tZ);
-                tx.setText("Accelerometer\nX: " + (sensorX) + "\n");
-                ty.setText("Y: " + (sensorY) + "\n");
-                tz.setText("Z: " + (sensorZ));
+                tx.setText("Accelerometer\nX: " + ((int)sensorX) + "\n");
+                ty.setText("Y: " + ((int)sensorY) + "\n");
+                tz.setText("Z: " + ((int)sensorZ));
                 break;
-
             case Sensor.TYPE_GYROSCOPE:
                 sensorGyroX = event.values[0];
                 sensorGyroY = event.values[1];
@@ -160,10 +169,14 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 GX = (TextView) findViewById(R.id.tGX);
                 GY = (TextView) findViewById(R.id.tGY);
                 GZ = (TextView) findViewById(R.id.tGZ);
-                GX.setText("GX: " + (sensorGyroX));
-                GY.setText("GY: " + (sensorGyroY));
-                GZ.setText("GZ: " + (sensorGyroZ));
+                GX.setText("GX: " + ((int)sensorGyroX));
+                GY.setText("GY: " + ((int)sensorGyroY));
+                GZ.setText("GZ: " + ((int)sensorGyroZ));
                 break;
+            case Sensor.TYPE_LIGHT:
+                nLight = event.values[0];
+                tL = (TextView) findViewById(R.id.tL);
+                tL.setText("Luminosidade: "+ (nLight));
             }
     }
 
@@ -175,7 +188,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
 
 
-    //****************************************GPS LOCALIZAçÃO********************************************************
+   //****************************************ON RESUME ***********************************************************
     @Override
     protected void onResume() {
         super.onResume();
@@ -189,7 +202,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         }
         lm.requestLocationUpdates(LocationManager.GPS_PROVIDER,10,10,this);
     }
-
+    //****************************************GPS LOCALIZAçÃO********************************************************
     @SuppressLint("MissingPermission")
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
@@ -206,7 +219,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     public void onLocationChanged(Location location) {
         longitude = location.getLongitude();
         latitude = location.getLatitude();
-        tGps.setText("GPS\nLatitude: "+ latitude + "\n" + "Longitude: " + longitude + "\n");
+        altitude = location.getAltitude();
+        tGps.setText("GPS\nLatitude: "+ latitude + "\n" + "Longitude: " + longitude + "\n" + "Altitude: " + altitude);
     }
 
     @Override

@@ -6,7 +6,6 @@
     android:layout_height="match_parent"
     tools:context="com.example.asus.myapplication.MainActivity">
 
-
     <TextView
         android:id="@+id/tX"
         android:layout_width="wrap_content"
@@ -114,7 +113,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="9dp"
-        android:text="GPS:"
         app:layout_constraintStart_toStartOf="@+id/tX"
         app:layout_constraintTop_toBottomOf="@+id/tX" />
 

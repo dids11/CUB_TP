@@ -22,6 +22,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -78,7 +79,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                             public void run() {
                                 TextView tdate = (TextView) findViewById(R.id.tA);
                                 long date = System.currentTimeMillis();
-                                SimpleDateFormat adf = new SimpleDateFormat("MMM dd yyyy , hh-mm-ss a");
+                                SimpleDateFormat adf = new SimpleDateFormat("dd-MM-yyyy , hh:mm:ss a");
                                 String dateString = adf.format(date);
                                 tdate.setText(dateString);
                             }
@@ -95,9 +96,16 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
         accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         sensorManager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_NORMAL);
+
         //****************************************GIROSCOPIO***********************************************************
         sensorManagerGyro = (SensorManager) getSystemService(SENSOR_SERVICE);
         gyroscope = sensorManagerGyro.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
+
+        if(gyroscope == null){
+            Toast.makeText(this, "The device has no gyroscope!\n", Toast.LENGTH_SHORT).show();
+            finish();
+        }
+
         sensorManagerGyro.registerListener(this, gyroscope, SensorManager.SENSOR_DELAY_NORMAL);
 
         //****************************************GPS (LOCALIZAçÃO)***************************************************
@@ -112,11 +120,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 return;
             }
         }
-
     }
-
-
-
 
     //****************************************ACELEROMETRO**********************************************************
     @Override
@@ -144,8 +148,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 tx = (TextView) findViewById(R.id.tX);
                 ty = (TextView) findViewById(R.id.tY);
                 tz = (TextView) findViewById(R.id.tZ);
-                tx.setText("X: " + (sensorX));
-                ty.setText("Y: " + (sensorY));
+                tx.setText("Accelerometer\nX: " + (sensorX) + "\n");
+                ty.setText("Y: " + (sensorY) + "\n");
                 tz.setText("Z: " + (sensorZ));
                 break;
 
@@ -202,7 +206,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     public void onLocationChanged(Location location) {
         longitude = location.getLongitude();
         latitude = location.getLatitude();
-        tGps.setText("GPS: "+ longitude + " , " + latitude);
+        tGps.setText("GPS\nLatitude: "+ latitude + "\n" + "Longitude: " + longitude + "\n");
     }
 
     @Override

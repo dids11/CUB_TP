@@ -20,10 +20,12 @@ import android.support.v7.app.AppCompatActivity;
 
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -52,57 +54,25 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     TextView tL;
 
 
-
+    private Ficheiro fich;
     TextView tGps;
-
     List<Dados> dados = new ArrayList();
     Dados a;
-
-    //botao tranfer data
+    //*******************BOTÕES*************************************************
     public void tranferOnClick (View v){
         Log.i("tranf","gravar");
         a=new Dados(latitude,longitude,sensorX,sensorY,sensorZ);
         Log.i("TEST",""+a.getLatitude());
-
+        fich = new Ficheiro(this);
+        fich.gravarNoFicheiro(teste);
+        //Button button = (Button) findViewById(R.id.button2);
+        //button.isEnabled(true);
     }
     public void stopOnClick(View v){
-        //************USAR DEPOIS PARA PARAR DE REGISTAR OS VALORES**********
         sensorManager.unregisterListener(this);
         sensorManagerLight.unregisterListener(this);
         sensorManagerGyro.unregisterListener(this);
 
-    }
-
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-
-        //****************************************DATA E HORAS********************************************************
-        Thread t = new Thread() {
-            @Override
-            public void run() {
-                try {
-                    while (!isInterrupted()) {
-                        Thread.sleep(1000);
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                TextView tdate = (TextView) findViewById(R.id.tA);
-                                long date = System.currentTimeMillis();
-                                SimpleDateFormat adf = new SimpleDateFormat("dd-MM-yyyy , HH:mm:ss");
-                                String dateString = adf.format(date);
-                                tdate.setText(dateString);
-                            }
-                        });
-                    }
-                } catch (InterruptedException e) {
-
-                }
-            }
-        };
-        t.start();
     }
 
     public void onClickStartActivity(View v){
@@ -146,6 +116,39 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             }
         }
     }
+
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        //****************************************DATA E HORAS********************************************************
+        Thread t = new Thread() {
+            @Override
+            public void run() {
+                try {
+                    while (!isInterrupted()) {
+                        Thread.sleep(1000);
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                TextView tdate = (TextView) findViewById(R.id.tA);
+                                long date = System.currentTimeMillis();
+                                SimpleDateFormat adf = new SimpleDateFormat("dd-MM-yyyy , HH:mm:ss");
+                                String dateString = adf.format(date);
+                                tdate.setText(dateString);
+                            }
+                        });
+                    }
+                } catch (InterruptedException e) {
+
+                }
+            }
+        };
+        t.start();
+    }
+
 
     @Override
     public void onSensorChanged(SensorEvent event) {
@@ -211,7 +214,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 grantResults[0]==PackageManager.PERMISSION_GRANTED &&
                 grantResults[1]==PackageManager.PERMISSION_GRANTED){
             LocationManager lm = (LocationManager) getSystemService(LOCATION_SERVICE);
-            lm.requestLocationUpdates(LocationManager.GPS_PROVIDER,10,10,this); //toDo: actualizar valores
+            lm.requestLocationUpdates(LocationManager.GPS_PROVIDER,10,10,this);
         }
     }
 

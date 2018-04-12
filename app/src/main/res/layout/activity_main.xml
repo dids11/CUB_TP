@@ -58,27 +58,27 @@
         app:layout_constraintTop_toBottomOf="@+id/tX" />
 
     <Button
-        android:id="@+id/button"
+        android:id="@+id/bTStart"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="58dp"
         android:onClick="onClickStartActivity"
         android:text="Start Activity"
-        app:layout_constraintBottom_toTopOf="@+id/button3"
-        app:layout_constraintStart_toStartOf="@+id/button3" />
+        app:layout_constraintBottom_toTopOf="@+id/bTTransf"
+        app:layout_constraintStart_toStartOf="@+id/bTTransf" />
 
     <Button
-        android:id="@+id/button2"
+        android:id="@+id/bTStop"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:onClick="stopOnClick"
         android:text="Stop"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/button" />
+        app:layout_constraintTop_toBottomOf="@+id/bTStart" />
 
     <Button
-        android:id="@+id/button3"
+        android:id="@+id/bTTransf"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="20dp"
@@ -96,7 +96,7 @@
         android:layout_marginEnd="16dp"
         android:text="Mode Auto"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/button3" />
+        app:layout_constraintEnd_toEndOf="@+id/bTTransf" />
 
     <TextView
         android:id="@+id/tGX"

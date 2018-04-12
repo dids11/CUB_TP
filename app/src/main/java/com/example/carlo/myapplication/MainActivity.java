@@ -59,63 +59,16 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     TextView tGps;
     List<Dados> dados = new ArrayList();
     Dados a;
+    Button bStart,bStop,bTransf;
 
-    //Button Transfer Data
-    public void tranferOnClick (View v){
-        Log.i("tranf","gravar");
-        a=new Dados(latitude,longitude,sensorX,sensorY,sensorZ);
-        Log.i("TEST",""+a.getLatitude());
-        fich = new Ficheiro(this);
-        //fich.gravarNoFicheiro(teste);
-        //Button button = (Button) findViewById(R.id.button2);
-        //button.isEnabled(true);
-    }
-
-    public void stopOnClick(View v){
-        sensorManager.unregisterListener(this);
-        sensorManagerLight.unregisterListener(this);
-        sensorManagerGyro.unregisterListener(this);
-    }
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-
-        //Spinner Activities
-        Spinner spinner = (Spinner)findViewById(R.id.spinner);
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,R.array.activities_array,android.R.layout.simple_spinner_item);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner.setAdapter(adapter);
-        spinner.setOnItemSelectedListener(this);
-
-        //****************************************DATA E HORAS********************************************************
-        Thread t = new Thread() {
-            @Override
-            public void run() {
-                try {
-                    while (!isInterrupted()) {
-                        Thread.sleep(1000);
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                TextView tdate = (TextView) findViewById(R.id.tA);
-                                long date = System.currentTimeMillis();
-                                SimpleDateFormat adf = new SimpleDateFormat("dd-MM-yyyy , HH:mm:ss");
-                                String dateString = adf.format(date);
-                                tdate.setText(dateString);
-                            }
-                        });
-                    }
-                } catch (InterruptedException e) {
-
-                }
-            }
-        };
-        t.start();
-    }
+    //***********************BOTÕES*****************************************
+    //Button bTStop = (Button) findViewById(R.id.bTStop);
+    //Button bTTransf = (Button) findViewById(R.id.bTTransf);
 
     public void onClickStartActivity(View v){
+        bStart = (Button) findViewById(R.id.bTStart);
+        bStart.setEnabled(false);
+        //bTStop.setEnabled(true);
         //Accelerometer
         sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
         accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
@@ -156,6 +109,63 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             }
         }
     }
+    public void stopOnClick(View v){
+        bStart = (Button) findViewById(R.id.bTStart);
+        //bStop = (Button) findViewById(R.id.bTStop);
+        //bStop.setEnabled(false);
+        bStart.setEnabled(true);
+        sensorManager.unregisterListener(this);
+        sensorManagerLight.unregisterListener(this);
+        sensorManagerGyro.unregisterListener(this);
+    }
+    public void tranferOnClick (View v){
+        Log.i("tranf","gravar");
+        a=new Dados(latitude,longitude,sensorX,sensorY,sensorZ);
+        Log.i("TEST",""+a.getLatitude());
+        fich = new Ficheiro(this);
+        //fich.gravarNoFicheiro(teste); para depois implementar
+    }
+
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        //Spinner Activities
+        Spinner spinner = (Spinner)findViewById(R.id.spinner);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,R.array.activities_array,android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(adapter);
+        spinner.setOnItemSelectedListener(this);
+
+        //****************************************DATA E HORAS********************************************************
+        Thread t = new Thread() {
+            @Override
+            public void run() {
+                try {
+                    while (!isInterrupted()) {
+                        Thread.sleep(1000);
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                TextView tdate = (TextView) findViewById(R.id.tA);
+                                long date = System.currentTimeMillis();
+                                SimpleDateFormat adf = new SimpleDateFormat("dd-MM-yyyy , HH:mm:ss");
+                                String dateString = adf.format(date);
+                                tdate.setText(dateString);
+                            }
+                        });
+                    }
+                } catch (InterruptedException e) {
+
+                }
+            }
+        };
+        t.start();
+    }
+
+
 
     @Override
     public void onSensorChanged(SensorEvent event) {

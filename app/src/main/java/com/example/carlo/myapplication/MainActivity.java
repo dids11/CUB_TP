@@ -67,8 +67,9 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     public void onClickStartActivity(View v){
         bStart = (Button) findViewById(R.id.bTStart);
+        bStop = (Button) findViewById(R.id.bTStop);
         bStart.setEnabled(false);
-        //bTStop.setEnabled(true);
+        bStop.setEnabled(true);
         //Accelerometer
         sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
         accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
@@ -111,8 +112,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     }
     public void stopOnClick(View v){
         bStart = (Button) findViewById(R.id.bTStart);
-        //bStop = (Button) findViewById(R.id.bTStop);
-        //bStop.setEnabled(false);
+        bStop = (Button) findViewById(R.id.bTStop);
+        bStop.setEnabled(false);
         bStart.setEnabled(true);
         sensorManager.unregisterListener(this);
         sensorManagerLight.unregisterListener(this);

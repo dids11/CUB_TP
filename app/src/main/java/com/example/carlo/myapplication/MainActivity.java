@@ -20,17 +20,19 @@ import android.support.v7.app.AppCompatActivity;
 
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.Spinner;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-
-public class MainActivity extends AppCompatActivity implements SensorEventListener, LocationListener{ //LocationListener
-    //acelerometro
+public class MainActivity extends AppCompatActivity implements SensorEventListener, LocationListener, AdapterView.OnItemSelectedListener { //LocationListener
+    //Accelerometer
     Sensor accelerometer;
     SensorManager sensorManager;
     float sensorX,sensorY,sensorZ;
@@ -51,33 +53,38 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     float nLight;
     TextView tL;
 
-
-
+    //GPS
     TextView tGps;
 
+    //Data & Time
     List<Dados> dados = new ArrayList();
     Dados a;
 
-    //botao tranfer data
+    //Button Transfer Data
     public void tranferOnClick (View v){
         Log.i("tranf","gravar");
         a=new Dados(latitude,longitude,sensorX,sensorY,sensorZ);
         Log.i("TEST",""+a.getLatitude());
-
     }
+
     public void stopOnClick(View v){
         //************USAR DEPOIS PARA PARAR DE REGISTAR OS VALORES**********
         sensorManager.unregisterListener(this);
         sensorManagerLight.unregisterListener(this);
         sensorManagerGyro.unregisterListener(this);
-
     }
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        //Spinner Activities
+        Spinner spinner = (Spinner)findViewById(R.id.spinner);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,R.array.activities_array,android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(adapter);
+        spinner.setOnItemSelectedListener(this);
 
         //****************************************DATA E HORAS********************************************************
         Thread t = new Thread() {
@@ -106,34 +113,34 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     }
 
     public void onClickStartActivity(View v){
-
-        //****************************************ACELEROMETRO********************************************************
+        //Accelerometer
         sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
         accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-        sensorManager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_NORMAL);
-
-        //****************************************GIROSCOPIO***********************************************************
-        sensorManagerGyro = (SensorManager) getSystemService(SENSOR_SERVICE);
-        gyroscope = sensorManagerGyro.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
-
-        if(gyroscope == null){
-            Toast.makeText(this, "The device has no gyroscope!\n", Toast.LENGTH_SHORT).show();
+        if(accelerometer == null){
+            Toast.makeText(this, "The device has no Gyroscope!\n", Toast.LENGTH_SHORT).show();
             finish();
         }
+        sensorManager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_NORMAL);
 
+        //Gyroscope
+        sensorManagerGyro = (SensorManager) getSystemService(SENSOR_SERVICE);
+        gyroscope = sensorManagerGyro.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
+        if(gyroscope == null){
+            Toast.makeText(this, "The device has no Gyroscope!\n", Toast.LENGTH_SHORT).show();
+            finish();
+        }
         sensorManagerGyro.registerListener(this, gyroscope, SensorManager.SENSOR_DELAY_NORMAL);
 
-        //****************************************LIGHTSENSOR***********************************************************
+        //LightSensor
         sensorManagerLight =(SensorManager) getSystemService(SENSOR_SERVICE);
         lightSensor = sensorManagerLight.getDefaultSensor(Sensor.TYPE_LIGHT);
         if(lightSensor == null){
-            Toast.makeText(this, "The device has no lightsensor!\n", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "The device has no LightSensor!\n", Toast.LENGTH_SHORT).show();
             finish();
         }
         sensorManagerLight.registerListener(this,lightSensor,SensorManager.SENSOR_DELAY_NORMAL);
 
-
-        //****************************************GPS (LOCALIZAçÃO)***************************************************
+        //GPS
         tGps=findViewById(R.id.tGPS);
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
             if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
@@ -149,7 +156,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     @Override
     public void onSensorChanged(SensorEvent event) {
-
         switch(event.sensor.getType()){
             case Sensor.TYPE_ACCELEROMETER:
                 sensorX = event.values[0];
@@ -185,9 +191,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     }
 
-
-
-
    //****************************************ON RESUME ***********************************************************
     @Override
     protected void onResume() {
@@ -202,6 +205,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         }
         lm.requestLocationUpdates(LocationManager.GPS_PROVIDER,10,10,this);
     }
+
     //****************************************GPS LOCALIZAçÃO********************************************************
     @SuppressLint("MissingPermission")
     @Override
@@ -235,6 +239,17 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     @Override
     public void onProviderDisabled(String s) {
+
+    }
+
+    @Override
+    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+        String sSelected = adapterView.getItemAtPosition(i).toString();
+        Toast.makeText(this, sSelected, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> adapterView) {
 
     }
 }

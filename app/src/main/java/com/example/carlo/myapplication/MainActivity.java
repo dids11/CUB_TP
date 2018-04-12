@@ -20,12 +20,9 @@ import android.support.v7.app.AppCompatActivity;
 
 import android.util.Log;
 import android.view.View;
-<<<<<<< HEAD
 import android.widget.Button;
-=======
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
->>>>>>> e555727d25a1a38255c7bebbb266dad7b0ae6e97
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -58,34 +55,20 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     float nLight;
     TextView tL;
 
-<<<<<<< HEAD
-
     private Ficheiro fich;
     TextView tGps;
     List<Dados> dados = new ArrayList();
     Dados a;
-    //*******************BOTÕES*************************************************
-=======
-    //GPS
-    TextView tGps;
-
-    //Data & Time
-    List<Dados> dados = new ArrayList();
-    Dados a;
 
     //Button Transfer Data
->>>>>>> e555727d25a1a38255c7bebbb266dad7b0ae6e97
     public void tranferOnClick (View v){
         Log.i("tranf","gravar");
         a=new Dados(latitude,longitude,sensorX,sensorY,sensorZ);
         Log.i("TEST",""+a.getLatitude());
-<<<<<<< HEAD
         fich = new Ficheiro(this);
-        fich.gravarNoFicheiro(teste);
+        //fich.gravarNoFicheiro(teste);
         //Button button = (Button) findViewById(R.id.button2);
         //button.isEnabled(true);
-=======
->>>>>>> e555727d25a1a38255c7bebbb266dad7b0ae6e97
     }
 
     public void stopOnClick(View v){
@@ -94,8 +77,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         sensorManagerGyro.unregisterListener(this);
     }
 
-<<<<<<< HEAD
-=======
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -134,7 +115,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         t.start();
     }
 
->>>>>>> e555727d25a1a38255c7bebbb266dad7b0ae6e97
     public void onClickStartActivity(View v){
         //Accelerometer
         sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
@@ -176,39 +156,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             }
         }
     }
-
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-
-        //****************************************DATA E HORAS********************************************************
-        Thread t = new Thread() {
-            @Override
-            public void run() {
-                try {
-                    while (!isInterrupted()) {
-                        Thread.sleep(1000);
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                TextView tdate = (TextView) findViewById(R.id.tA);
-                                long date = System.currentTimeMillis();
-                                SimpleDateFormat adf = new SimpleDateFormat("dd-MM-yyyy , HH:mm:ss");
-                                String dateString = adf.format(date);
-                                tdate.setText(dateString);
-                            }
-                        });
-                    }
-                } catch (InterruptedException e) {
-
-                }
-            }
-        };
-        t.start();
-    }
-
 
     @Override
     public void onSensorChanged(SensorEvent event) {

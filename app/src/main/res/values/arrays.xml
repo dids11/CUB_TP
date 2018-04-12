@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="activities_array">
+        <item>Walking</item>
+        <item>Running</item>
+        <item>Go Upstairs</item>
+        <item>Go Downstairs</item>
+        <item>Driving</item>
+        <item>Other</item>
+    </string-array>
+</resources>

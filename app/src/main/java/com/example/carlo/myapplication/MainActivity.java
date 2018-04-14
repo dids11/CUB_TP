@@ -15,6 +15,7 @@ import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
 
+import android.os.SystemClock;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 
@@ -31,6 +32,7 @@ import android.widget.Spinner;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements SensorEventListener, LocationListener, AdapterView.OnItemSelectedListener { //LocationListener
@@ -39,6 +41,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     SensorManager sensorManager;
     float sensorX,sensorY,sensorZ;
     TextView tx,ty,tz;
+
+    //GPS
     double longitude;
     double latitude;
     double altitude;
@@ -55,6 +59,12 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     float nLight;
     TextView tL;
 
+    //Magnetometer
+    Sensor magnetometer;
+    SensorManager sensorManagerMagnetometer;
+    float sensorMagnoX, sensorMagnoY, sensorMagnoZ;
+    TextView magnoX, magnoY, magnoZ;
+
     private Ficheiro fich;
     TextView tGps;
     List<Dados> dados = new ArrayList();
@@ -62,7 +72,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     Button bStart,bStop,bTransf;
 
     //***********************BOTÕES*****************************************
-    //Button bTStop = (Button) findViewById(R.id.bTStop);
     //Button bTTransf = (Button) findViewById(R.id.bTTransf);
 
     public void onClickStartActivity(View v){
@@ -74,7 +83,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
         accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         if(accelerometer == null){
-            Toast.makeText(this, "The device has no Gyroscope!\n", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "The device has no Accelerometer!\n", Toast.LENGTH_SHORT).show();
             finish();
         }
         sensorManager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_NORMAL);
@@ -82,10 +91,10 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         //Gyroscope
         sensorManagerGyro = (SensorManager) getSystemService(SENSOR_SERVICE);
         gyroscope = sensorManagerGyro.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
-        if(gyroscope == null){
+/*        if(gyroscope == null){
             Toast.makeText(this, "The device has no Gyroscope!\n", Toast.LENGTH_SHORT).show();
             finish();
-        }
+        }*/
         sensorManagerGyro.registerListener(this, gyroscope, SensorManager.SENSOR_DELAY_NORMAL);
 
         //LightSensor
@@ -96,6 +105,15 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             finish();
         }
         sensorManagerLight.registerListener(this,lightSensor,SensorManager.SENSOR_DELAY_NORMAL);
+
+        //Magnetometer
+        sensorManagerMagnetometer = (SensorManager) getSystemService(SENSOR_SERVICE);
+        magnetometer = sensorManagerMagnetometer.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
+        if(magnetometer == null){
+            Toast.makeText(this, "The device has no Magnetometer!\n", Toast.LENGTH_SHORT).show();
+            finish();
+        }
+        sensorManagerMagnetometer.registerListener(this,magnetometer,SensorManager.SENSOR_DELAY_NORMAL);
 
         //GPS
         tGps=findViewById(R.id.tGPS);
@@ -118,6 +136,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         sensorManager.unregisterListener(this);
         sensorManagerLight.unregisterListener(this);
         sensorManagerGyro.unregisterListener(this);
+        sensorManagerMagnetometer.unregisterListener(this);
     }
     public void tranferOnClick (View v){
         Log.i("tranf","gravar");
@@ -178,8 +197,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 tx = (TextView) findViewById(R.id.tX);
                 ty = (TextView) findViewById(R.id.tY);
                 tz = (TextView) findViewById(R.id.tZ);
-                tx.setText("Accelerometer\nX: " + ((int)sensorX) + "\n");
-                ty.setText("Y: " + ((int)sensorY) + "\n");
+                tx.setText("X: " + ((int)sensorX));
+                ty.setText("Y: " + ((int)sensorY));
                 tz.setText("Z: " + ((int)sensorZ));
                 break;
             case Sensor.TYPE_GYROSCOPE:
@@ -196,7 +215,19 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             case Sensor.TYPE_LIGHT:
                 nLight = event.values[0];
                 tL = (TextView) findViewById(R.id.tL);
-                tL.setText("Luminosidade: "+ (nLight));
+                tL.setText("" + nLight);
+                break;
+            case Sensor.TYPE_MAGNETIC_FIELD:
+                sensorMagnoX = event.values[0];
+                sensorMagnoY = event.values[1];
+                sensorMagnoZ = event.values[2];
+                magnoX = (TextView) findViewById(R.id.tMX);
+                magnoY = (TextView) findViewById(R.id.tMY);
+                magnoZ = (TextView) findViewById(R.id.tMZ);
+                magnoX.setText("MX: " + ((int)sensorMagnoX));
+                magnoY.setText("MY: " + ((int)sensorMagnoY));
+                magnoZ.setText("MZ: " + ((int)sensorMagnoZ));
+                break;
             }
     }
 
@@ -238,7 +269,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         longitude = location.getLongitude();
         latitude = location.getLatitude();
         altitude = location.getAltitude();
-        tGps.setText("GPS\nLatitude: "+ latitude + "\n" + "Longitude: " + longitude + "\n" + "Altitude: " + altitude);
+        tGps.setText("Latitude: "+ latitude + "\n" + "Longitude: " + longitude + "\n" + "Altitude: " + altitude);
     }
 
     @Override

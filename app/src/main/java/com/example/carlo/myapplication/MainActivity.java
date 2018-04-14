@@ -215,7 +215,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             case Sensor.TYPE_LIGHT:
                 nLight = event.values[0];
                 tL = (TextView) findViewById(R.id.tL);
-                tL.setText("" + nLight);
+                tL.setText("Luminosity: " + nLight);
                 break;
             case Sensor.TYPE_MAGNETIC_FIELD:
                 sensorMagnoX = event.values[0];

@@ -21,7 +21,7 @@ public class Ficheiro {
         try{
             FileOutputStream fileOut = context.openFileOutput(NomeFich,Context.MODE_APPEND);
             fileOut.write(dados.getBytes());
-            Toast.makeText(context,"Save!", Toast.LENGTH_LONG).show();
+            //Toast.makeText(context,"Save!", Toast.LENGTH_LONG).show();
         }catch (Exception e){
             e.printStackTrace();
             Toast.makeText(context,"Error on save!",Toast.LENGTH_LONG).show();

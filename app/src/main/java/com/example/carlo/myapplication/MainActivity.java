@@ -351,7 +351,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     @Override
     public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
         String sSelected = adapterView.getItemAtPosition(i).toString();
-        Toast.makeText(this, sSelected, Toast.LENGTH_SHORT).show();
     }
 
     @Override

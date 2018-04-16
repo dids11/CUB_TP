@@ -77,13 +77,10 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     String sCompleta;
     List<Dados> Ldados = new ArrayList();
 
-    //a = new Dados(lat, lng, alt, timestamp,x_acc,  y_acc, z_acc, x_gyro, y_gyro, z_gyro, x_m, y_m, z_m, lumi);
-    //dados.add(a):
     Button bStart,bStop,bTransf;
     private boolean runThread = false;
 
     //***********************BOTÕES*****************************************
-    //Button bTTransf = (Button) findViewById(R.id.bTTransf);
 
     public void onClickStartActivity(View v){
         bStart = (Button) findViewById(R.id.bTStart);
@@ -238,7 +235,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
         spinner.setOnItemSelectedListener(this);
-        //a = new Dados("1", "1", "1", "1", "1", "1", "1", "1", "1", "1", "1", "1", "1","1","1");
         //****************************************DATA E HORAS********************************************************
         Thread t = new Thread() {
             @Override

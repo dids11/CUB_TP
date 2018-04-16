@@ -35,7 +35,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements SensorEventListener, LocationListener, AdapterView.OnItemSelectedListener { //LocationListener
+public class MainActivity extends AppCompatActivity implements SensorEventListener, LocationListener, AdapterView.OnItemSelectedListener {
     //Accelerometer
     Sensor accelerometer;
     SensorManager sensorManager;
@@ -46,6 +46,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     double longitude;
     double latitude;
     double altitude;
+    TextView tGps;
 
     //Gyroscope
     Sensor gyroscope;
@@ -65,11 +66,20 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     float sensorMagnoX, sensorMagnoY, sensorMagnoZ;
     TextView magnoX, magnoY, magnoZ;
 
+    //Data/tempo
+    String dateString;
+    //fICHEIRO
     private Ficheiro fich;
-    TextView tGps;
-    List<Dados> dados = new ArrayList();
-    Dados a;
+    String fname ="cubDados.csv";
+
+    //Spinner
+    Spinner spinner;
+    String sCompleta;
+    //List<Dados> dados = new ArrayList();
+    //Dados a;
+
     Button bStart,bStop,bTransf;
+    private boolean runThread = false;
 
     //***********************BOTÕES*****************************************
     //Button bTTransf = (Button) findViewById(R.id.bTTransf);
@@ -79,6 +89,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         bStop = (Button) findViewById(R.id.bTStop);
         bStart.setEnabled(false);
         bStop.setEnabled(true);
+        runThread= true;
+
         //Accelerometer
         sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
         accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
@@ -127,10 +139,51 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 return;
             }
         }
+
+
+        //PASSAR PARA o ficheiro
+        Thread a = new Thread() {
+            @Override
+            public void run() {
+                try {
+                    while (!isInterrupted()&& runThread) {
+                        Thread.sleep(250);
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                String lat = String.valueOf(latitude)+";";
+                                String lng = String.valueOf(longitude)+";";
+                                String alt= String.valueOf(altitude)+";";
+                                String timestamp = dateString+";";
+                                String x_acc = String.valueOf(sensorX)+";";
+                                String y_acc = String.valueOf(sensorY)+";";
+                                String z_acc = String.valueOf(sensorZ)+";";
+                                String x_gyro = String.valueOf(sensorGyroX)+";";
+                                String y_gyro = String.valueOf(sensorGyroY)+";";
+                                String z_gyro = String.valueOf(sensorGyroZ)+";";
+                                String x_m = String.valueOf(sensorMagnoX)+";";
+                                String y_m = String.valueOf(sensorMagnoY)+";";
+                                String z_m = String.valueOf(sensorMagnoZ)+";";
+                                String lumi = String.valueOf(nLight)+";";
+                                String activity = String.valueOf(spinner != null ? spinner.getSelectedItem() : null);
+                                sCompleta=lat+lng+alt+timestamp+x_acc+y_acc+z_acc+x_gyro+y_gyro+z_gyro+x_m+y_m+z_m+lumi+activity+"\n";
+                                fich.gravarNoFicheiro(sCompleta);
+
+                            }
+                        });
+                    }
+                } catch (InterruptedException e) {
+
+                }
+            }
+        };
+        a.start();
+
     }
 
     public void stopOnClick(View v){
         bStart = (Button) findViewById(R.id.bTStart);
+        runThread= false;
         bStop = (Button) findViewById(R.id.bTStop);
         bStop.setEnabled(false);
         bStart.setEnabled(true);
@@ -141,11 +194,11 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     }
 
     public void tranferOnClick (View v){
-        Log.i("tranf","gravar");
-        a = new Dados(latitude,longitude,sensorX,sensorY,sensorZ);
-        Log.i("TEST",""+a.getLatitude());
-        fich = new Ficheiro(this);
+        //Log.i("tranf","gravar");
+        //a = new Dados(latitude,longitude,sensorX,sensorY,sensorZ);
+        //Log.i("TEST",""+a.getLatitude());
         //fich.gravarNoFicheiro();
+        //fich.gravarNoFicheiro("1,2,3,4,5,6,7,8 \n");
     }
 
     @Override
@@ -154,7 +207,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         setContentView(R.layout.activity_main);
 
         //Spinner Activities
-        Spinner spinner = (Spinner)findViewById(R.id.spinner);
+        spinner = (Spinner)findViewById(R.id.spinner);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,R.array.activities_array,android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
@@ -173,7 +226,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                                 TextView tdate = (TextView) findViewById(R.id.tA);
                                 long date = System.currentTimeMillis();
                                 SimpleDateFormat adf = new SimpleDateFormat("dd-MM-yyyy , HH:mm:ss");
-                                String dateString = adf.format(date);
+                                dateString = adf.format(date);
                                 tdate.setText(dateString);
                             }
                         });
@@ -184,6 +237,11 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             }
         };
         t.start();
+        fich = new Ficheiro(this);
+        if(!FileExists(fname)){
+            fich.gravarNoFicheiro("lat;lng;alt;timestamp;x_acc;y_acc;z_acc;x_gyro;y_gyro;z_gyro;x_m;y_m;z_m;lumi;activity \n");
+        }
+
     }
 
     @Override
@@ -263,27 +321,31 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         }
     }
 
+    @SuppressLint("DefaultLocale")
     @Override
     public void onLocationChanged(Location location) {
-        longitude = location.getLongitude();
-        latitude = location.getLatitude();
-        altitude = location.getAltitude();
-        tGps.setText("Lat: "+ latitude + "\n" + "Long: " + longitude + "\n" + "Alt: " + altitude);
+        if(location!=null) {
+            longitude = location.getLongitude();
+            latitude = location.getLatitude();
+            altitude = location.getAltitude();
+            tGps = (TextView) findViewById(R.id.tGPS);
+            longitude = Double.valueOf(String.format("%.2f", longitude));
+            latitude = Double.valueOf(String.format("%.2f", latitude));
+            altitude = Double.valueOf(String.format("%.2f", longitude));
+            tGps.setText("Lat: " + latitude + "\n" + "Long: " + longitude + "\n" + "Alt: " + altitude);
+        }
     }
 
     @Override
     public void onStatusChanged(String s, int i, Bundle bundle) {
-
     }
 
     @Override
     public void onProviderEnabled(String s) {
-
     }
 
     @Override
     public void onProviderDisabled(String s) {
-
     }
 
     @Override
@@ -294,6 +356,14 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     @Override
     public void onNothingSelected(AdapterView<?> adapterView) {
+    }
 
+    //****************************************OUTRAS FUNCOES************************
+    public boolean FileExists(String fname){
+        File file = getBaseContext().getFileStreamPath(fname);
+        return file.exists();
+    }
+    public void onDestroy() {
+        super.onDestroy();
     }
 }

@@ -75,9 +75,10 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     //Spinner
     Spinner spinner;
     String sCompleta;
-    //List<Dados> dados = new ArrayList();
-    //Dados a;
+    List<Dados> Ldados = new ArrayList();
 
+    //a = new Dados(lat, lng, alt, timestamp,x_acc,  y_acc, z_acc, x_gyro, y_gyro, z_gyro, x_m, y_m, z_m, lumi);
+    //dados.add(a):
     Button bStart,bStop,bTransf;
     private boolean runThread = false;
 
@@ -90,6 +91,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         bStart.setEnabled(false);
         bStop.setEnabled(true);
         runThread= true;
+
 
         //Accelerometer
         sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
@@ -151,6 +153,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
+                                Dados a;
                                 String lat = String.valueOf(latitude)+";";
                                 String lng = String.valueOf(longitude)+";";
                                 String alt= String.valueOf(altitude)+";";
@@ -166,8 +169,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                                 String z_m = String.valueOf(sensorMagnoZ)+";";
                                 String lumi = String.valueOf(nLight)+";";
                                 String activity = String.valueOf(spinner != null ? spinner.getSelectedItem() : null);
-                                sCompleta=lat+lng+alt+timestamp+x_acc+y_acc+z_acc+x_gyro+y_gyro+z_gyro+x_m+y_m+z_m+lumi+activity+"\n";
-                                fich.gravarNoFicheiro(sCompleta);
+                                a = new Dados(lat, lng, alt, timestamp,x_acc,  y_acc, z_acc, x_gyro, y_gyro, z_gyro, x_m, y_m, z_m, lumi,activity);
+                                Ldados.add(a);
 
                             }
                         });
@@ -191,6 +194,10 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         sensorManagerLight.unregisterListener(this);
         sensorManagerGyro.unregisterListener(this);
         sensorManagerMagnetometer.unregisterListener(this);
+        for(int i=0;i<Ldados.size();i++){
+            fich.gravarNoFicheiro(Ldados.get(i).getComplet());
+        }
+        Ldados.clear();
     }
 
     public void tranferOnClick (View v){
@@ -212,7 +219,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
         spinner.setOnItemSelectedListener(this);
-
+        //a = new Dados("1", "1", "1", "1", "1", "1", "1", "1", "1", "1", "1", "1", "1","1","1");
         //****************************************DATA E HORAS********************************************************
         Thread t = new Thread() {
             @Override

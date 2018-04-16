@@ -3,9 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/CUB_TP.iml" filepath="$PROJECT_DIR$/CUB_TP.iml" />
-      <module fileurl="file://C:\Users\Admin\Documents\GitHub\CUB_TP\CUB_TP.iml" filepath="C:\Users\Admin\Documents\GitHub\CUB_TP\CUB_TP.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://C:\Users\Admin\Documents\GitHub\CUB_TP\app\app.iml" filepath="C:\Users\Admin\Documents\GitHub\CUB_TP\app\app.iml" />
     </modules>
   </component>
 </project>

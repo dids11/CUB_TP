@@ -143,8 +143,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         }
 
 
-        //PASSAR PARA o ficheiro
-        Thread a = new Thread() {
+        //PASSAR PARA EM ARRAY
+        Thread b = new Thread() {
             @Override
             public void run() {
                 try {
@@ -180,8 +180,30 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 }
             }
         };
-        a.start();
+        b.start();
+        //PARA GRAVAR EM FICHEIRO
+        Thread c = new Thread() {
+            @Override
+            public void run() {
+                try {
+                    while (!isInterrupted()&& runThread) {
+                        Thread.sleep(8000);
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                for(int i=0;i<Ldados.size();i++){
+                                    fich.gravarNoFicheiro(Ldados.get(i).getComplet());
+                                }
+                                Ldados.clear();
+                            }
+                        });
+                    }
+                } catch (InterruptedException e) {
 
+                }
+            }
+        };
+        c.start();
     }
 
     public void stopOnClick(View v){
@@ -194,10 +216,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         sensorManagerLight.unregisterListener(this);
         sensorManagerGyro.unregisterListener(this);
         sensorManagerMagnetometer.unregisterListener(this);
-        for(int i=0;i<Ldados.size();i++){
-            fich.gravarNoFicheiro(Ldados.get(i).getComplet());
-        }
-        Ldados.clear();
     }
 
     public void tranferOnClick (View v){

@@ -128,6 +128,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             }
         }
     }
+
     public void stopOnClick(View v){
         bStart = (Button) findViewById(R.id.bTStart);
         bStop = (Button) findViewById(R.id.bTStop);
@@ -138,14 +139,14 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         sensorManagerGyro.unregisterListener(this);
         sensorManagerMagnetometer.unregisterListener(this);
     }
+
     public void tranferOnClick (View v){
         Log.i("tranf","gravar");
-        a=new Dados(latitude,longitude,sensorX,sensorY,sensorZ);
+        a = new Dados(latitude,longitude,sensorX,sensorY,sensorZ);
         Log.i("TEST",""+a.getLatitude());
         fich = new Ficheiro(this);
-        //fich.gravarNoFicheiro(teste); para depois implementar
+        //fich.gravarNoFicheiro();
     }
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -184,8 +185,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         };
         t.start();
     }
-
-
 
     @Override
     public void onSensorChanged(SensorEvent event) {
@@ -269,7 +268,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         longitude = location.getLongitude();
         latitude = location.getLatitude();
         altitude = location.getAltitude();
-        tGps.setText("Latitude: "+ latitude + "\n" + "Longitude: " + longitude + "\n" + "Altitude: " + altitude);
+        tGps.setText("Lat: "+ latitude + "\n" + "Long: " + longitude + "\n" + "Alt: " + altitude);
     }
 
     @Override

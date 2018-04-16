@@ -24,7 +24,7 @@ public class Ficheiro {
             Toast.makeText(context,"Save!", Toast.LENGTH_LONG).show();
         }catch (Exception e){
             e.printStackTrace();
-            Toast.makeText(context,"Erro a gravar o ficheiro",Toast.LENGTH_LONG).show();
+            Toast.makeText(context,"Error on save!",Toast.LENGTH_LONG).show();
         }
     }
 }

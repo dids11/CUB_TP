@@ -41,7 +41,7 @@ public class Dados {
     }
 
     public String getComplet(){
-        String sComplet=lat+";"+lng+";"+alti+";"+timestamp+";"+x_acc+";"+y_acc+";"+z_acc+";"+x_gyro+";"+y_gyro+";"+z_gyro+";"+x_m+";"+y_m+";"+z_m+";"+lumi+";"+activity+"\n";
+        String sComplet=lat+lng+alti+timestamp+x_acc+y_acc+z_acc+x_gyro+y_gyro+z_gyro+x_m+y_m+z_m+lumi+activity+"\n";
         return sComplet;
     }
     public String getLat() {

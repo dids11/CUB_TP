@@ -171,6 +171,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                                 String activity = String.valueOf(spinner != null ? spinner.getSelectedItem() : null);
                                 a = new Dados(lat, lng, alt, timestamp,x_acc,  y_acc, z_acc, x_gyro, y_gyro, z_gyro, x_m, y_m, z_m, lumi,activity);
                                 Ldados.add(a);
+                                a=null;
 
                             }
                         });

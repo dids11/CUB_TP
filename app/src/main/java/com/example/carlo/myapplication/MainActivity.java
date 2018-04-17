@@ -15,6 +15,7 @@ import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
 
+import android.os.Environment;
 import android.os.SystemClock;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -34,6 +35,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import com.jcraft.jsch.*;
+import android.os.AsyncTask;
+import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity implements SensorEventListener, LocationListener, AdapterView.OnItemSelectedListener {
     //Accelerometer
@@ -220,11 +224,10 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     }
 
     public void tranferOnClick (View v){
-        //Log.i("tranf","gravar");
-        //a = new Dados(latitude,longitude,sensorX,sensorY,sensorZ);
-        //Log.i("TEST",""+a.getLatitude());
-        //fich.gravarNoFicheiro();
-        //fich.gravarNoFicheiro("1,2,3,4,5,6,7,8 \n");
+        if(FileExists(fname)){
+            new LongOperation().execute();
+        }
+
     }
 
     @Override
@@ -389,6 +392,53 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     public boolean FileExists(String fname){
         File file = getBaseContext().getFileStreamPath(fname);
         return file.exists();
+    }
+    private class LongOperation extends AsyncTask<Void, Integer, String> {
+        @Override
+        protected String doInBackground(Void... params) {
+            Log.i("AQU*","******AQUIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII*******"+getBaseContext().getFileStreamPath(fname).getPath());
+            try {
+                JSch ssh = new JSch();
+                Session session = ssh.getSession("cubistudent", "urbysense.dei.uc.pt", 22);
+                // Remember that this is just for testing and we need a quick access, you can add an identity and known_hosts file to prevent
+                // Man In the Middle attacks
+                java.util.Properties config = new java.util.Properties();
+                config.put("StrictHostKeyChecking", "no");
+                session.setConfig(config);
+                session.setPassword("mis_cubi_2018");
+
+                session.connect();
+                Channel channel = session.openChannel("sftp");
+                channel.connect();
+
+                ChannelSftp sftp = (ChannelSftp) channel;
+
+                sftp.cd("/home/cubistudent/a21220121_a21220107");
+                // If you need to display the progress of the upload, read how to do it in the end of the article
+
+                // use the put method , if you are using android remember to remove "file://" and use only the relative path
+                sftp.put(getBaseContext().getFileStreamPath(fname).getPath(), "dadosCb.csv");
+                channel.disconnect();
+                session.disconnect();
+            } catch (JSchException e) {
+                System.out.println(e.getMessage().toString());
+                e.printStackTrace();
+            } catch (SftpException e) {
+                System.out.println(e.getMessage().toString());
+                e.printStackTrace();
+            }
+            return "Terminado";
+        }
+
+
+
+        @Override
+        protected void onPostExecute(String result) {
+            Log.d("PostExecuted",result);
+        }
+
+
+
     }
     public void onDestroy() {
         super.onDestroy();

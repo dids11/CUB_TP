@@ -95,6 +95,13 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         bTr.setEnabled(false);
         runThread= true;
 
+        fich = new Ficheiro(this);
+        if(!FileExists(fname)){
+            Button bT = (Button) findViewById(R.id.bTTransf);
+            bT.setEnabled(false);
+            fich.gravarNoFicheiro("lat;lng;alt;timestamp;x_acc;y_acc;z_acc;x_gyro;y_gyro;z_gyro;x_m;y_m;z_m;lumi;activity \n");
+        }
+
         //Accelerometer
         sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
         accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
@@ -107,10 +114,10 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         //Gyroscope
         sensorManagerGyro = (SensorManager) getSystemService(SENSOR_SERVICE);
         gyroscope = sensorManagerGyro.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
-/*        if(gyroscope == null){
+        if(gyroscope == null){
             Toast.makeText(this, "The device has no Gyroscope!\n", Toast.LENGTH_SHORT).show();
             finish();
-        }*/
+        }
         sensorManagerGyro.registerListener(this, gyroscope, SensorManager.SENSOR_DELAY_NORMAL);
 
         //LightSensor
@@ -131,18 +138,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         }
         sensorManagerMagnetometer.registerListener(this,magnetometer,SensorManager.SENSOR_DELAY_NORMAL);
 
-        //GPS
-        tGps=findViewById(R.id.tGPS);
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
-            if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
-                    checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                requestPermissions(new String[]{
-                        Manifest.permission.ACCESS_FINE_LOCATION,
-                        Manifest.permission.ACCESS_COARSE_LOCATION
-                }, 1234);
-                return;
-            }
-        }
+
 
 
         //PASSAR PARA EM ARRAY
@@ -184,29 +180,30 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             }
         };
         b.start();
-        //PARA GRAVAR EM FICHEIRO
-        Thread c = new Thread() {
-            @Override
-            public void run() {
-                try {
-                    while (!isInterrupted()&& runThread) {
-                        Thread.sleep(8000);
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                for(int i=0;i<Ldados.size();i++){
-                                    fich.gravarNoFicheiro(Ldados.get(i).getComplet());
-                                }
-                                Ldados.clear();
-                            }
-                        });
-                    }
-                } catch (InterruptedException e) {
 
+        //PARA GRAVAR EM FICHEIRO
+            Thread c = new Thread() {
+                @Override
+                public void run() {
+                    try {
+                        while (!isInterrupted()&& runThread) {
+                            Thread.sleep(8000);
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    for(int i=0;i<Ldados.size();i++){
+                                        fich.gravarNoFicheiro(Ldados.get(i).getComplet());
+                                    }
+                                    Ldados.clear();
+                                }
+                            });
+                        }
+                    } catch (InterruptedException e) {
+
+                    }
                 }
-            }
-        };
-        c.start();
+            };
+            c.start();
     }
 
     public void stopOnClick(View v){
@@ -234,6 +231,13 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        /*fich = new Ficheiro(this);
+        if(!FileExists(fname)){
+            Button bT = (Button) findViewById(R.id.bTTransf);
+            bT.setEnabled(false);
+            fich.gravarNoFicheiro("lat;lng;alt;timestamp;x_acc;y_acc;z_acc;x_gyro;y_gyro;z_gyro;x_m;y_m;z_m;lumi;activity \n");
+        }*/
 
         //Spinner Activities
         spinner = (Spinner)findViewById(R.id.spinner);
@@ -265,11 +269,18 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             }
         };
         t.start();
-        fich = new Ficheiro(this);
-        if(!FileExists(fname)){
-            Button bT = (Button) findViewById(R.id.bTTransf);
-            bT.setEnabled(false);
-            fich.gravarNoFicheiro("lat;lng;alt;timestamp;x_acc;y_acc;z_acc;x_gyro;y_gyro;z_gyro;x_m;y_m;z_m;lumi;activity \n");
+
+        //GPS
+        tGps=findViewById(R.id.tGPS);
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
+            if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+                    checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                requestPermissions(new String[]{
+                        Manifest.permission.ACCESS_FINE_LOCATION,
+                        Manifest.permission.ACCESS_COARSE_LOCATION
+                }, 1234);
+                return;
+            }
         }
     }
 
@@ -393,10 +404,14 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         File file = getBaseContext().getFileStreamPath(fname);
         return file.exists();
     }
+    public boolean FileDelete(String fname){
+        File filee = getBaseContext().getFileStreamPath(fname);
+        boolean del= filee.delete();
+        return del;
+    }
     private class LongOperation extends AsyncTask<Void, Integer, String> {
         @Override
         protected String doInBackground(Void... params) {
-            Log.i("AQU*","******AQUIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII*******"+getBaseContext().getFileStreamPath(fname).getPath());
             try {
                 JSch ssh = new JSch();
                 Session session = ssh.getSession("cubistudent", "urbysense.dei.uc.pt", 22);
@@ -435,6 +450,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         @Override
         protected void onPostExecute(String result) {
             Log.d("PostExecuted",result);
+            Toast.makeText(MainActivity.this, "Saved", Toast.LENGTH_SHORT).show();
+            FileDelete(fname);
         }
 
 

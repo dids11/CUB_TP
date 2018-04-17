@@ -85,10 +85,11 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     public void onClickStartActivity(View v){
         bStart = (Button) findViewById(R.id.bTStart);
         bStop = (Button) findViewById(R.id.bTStop);
+        Button bTr = (Button) findViewById(R.id.bTTransf);
         bStart.setEnabled(false);
         bStop.setEnabled(true);
+        bTr.setEnabled(false);
         runThread= true;
-
 
         //Accelerometer
         sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
@@ -205,11 +206,13 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     }
 
     public void stopOnClick(View v){
-        bStart = (Button) findViewById(R.id.bTStart);
+        Button bSta = (Button) findViewById(R.id.bTStart);
         runThread= false;
-        bStop = (Button) findViewById(R.id.bTStop);
-        bStop.setEnabled(false);
-        bStart.setEnabled(true);
+        Button bSt = (Button) findViewById(R.id.bTStop);
+        Button bTra = (Button) findViewById(R.id.bTTransf);
+        bSt.setEnabled(false);
+        bSta.setEnabled(true);
+        bTra.setEnabled(true);
         sensorManager.unregisterListener(this);
         sensorManagerLight.unregisterListener(this);
         sensorManagerGyro.unregisterListener(this);
@@ -261,9 +264,10 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         t.start();
         fich = new Ficheiro(this);
         if(!FileExists(fname)){
+            Button bT = (Button) findViewById(R.id.bTTransf);
+            bT.setEnabled(false);
             fich.gravarNoFicheiro("lat;lng;alt;timestamp;x_acc;y_acc;z_acc;x_gyro;y_gyro;z_gyro;x_m;y_m;z_m;lumi;activity \n");
         }
-
     }
 
     @Override
@@ -328,6 +332,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             }
         }
         lm.requestLocationUpdates(LocationManager.GPS_PROVIDER,10,10,this);
+        lm.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,10,10,this);
     }
 
     //****************************************GPS LOCALIZAçÃO********************************************************
@@ -340,6 +345,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 grantResults[1]==PackageManager.PERMISSION_GRANTED){
             LocationManager lm = (LocationManager) getSystemService(LOCATION_SERVICE);
             lm.requestLocationUpdates(LocationManager.GPS_PROVIDER,10,10,this);
+            lm.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,10,10,this);
         }
     }
 
@@ -353,7 +359,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             tGps = (TextView) findViewById(R.id.tGPS);
             longitude = Double.valueOf(String.format("%.2f", longitude));
             latitude = Double.valueOf(String.format("%.2f", latitude));
-            altitude = Double.valueOf(String.format("%.2f", longitude));
+            altitude = Double.valueOf(String.format("%.2f", altitude));
             tGps.setText("Lat: " + latitude + "\n" + "Long: " + longitude + "\n" + "Alt: " + altitude);
         }
     }

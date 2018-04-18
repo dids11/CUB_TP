@@ -149,7 +149,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             public void run() {
                 try {
                     while (!isInterrupted()&& runThread) {
-                        Thread.sleep(250);
+                        Thread.sleep(120);
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
@@ -375,10 +375,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             latitude = location.getLatitude();
             altitude = location.getAltitude();
             tGps = (TextView) findViewById(R.id.tGPS);
-            longitude = Double.valueOf(String.format("%.2f", longitude));
-            latitude = Double.valueOf(String.format("%.2f", latitude));
-            altitude = Double.valueOf(String.format("%.2f", altitude));
-            tGps.setText("Lat: " + latitude + "\n" + "Long: " + longitude + "\n" + "Alt: " + altitude);
+            tGps.setText("Lat: " + (int)latitude + "\n" + "Long: " + (int)longitude + "\n" + "Alt: " + (int)altitude);
         }
     }
 

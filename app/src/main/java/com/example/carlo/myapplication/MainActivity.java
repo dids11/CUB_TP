@@ -224,6 +224,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     public void tranferOnClick (View v){
         if(FileExists(fname)){
+            Button bTras = (Button) findViewById(R.id.bTTransf);
+            bTras.setEnabled(false);
             new LongOperation().execute();
         }
 

@@ -35,6 +35,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.UUID;
+
 import com.jcraft.jsch.*;
 import android.os.AsyncTask;
 import android.widget.Toast;
@@ -430,9 +432,10 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
                 sftp.cd("/home/cubistudent/a21220121_a21220107");
                 // If you need to display the progress of the upload, read how to do it in the end of the article
-
+                String uuid = UUID.randomUUID().toString();
+                uuid="dadosCb_"+uuid+".csv";
                 // use the put method , if you are using android remember to remove "file://" and use only the relative path
-                sftp.put(getBaseContext().getFileStreamPath(fname).getPath(), "dadosCb.csv");
+                sftp.put(getBaseContext().getFileStreamPath(fname).getPath(), uuid);
                 channel.disconnect();
                 session.disconnect();
             } catch (JSchException e) {
